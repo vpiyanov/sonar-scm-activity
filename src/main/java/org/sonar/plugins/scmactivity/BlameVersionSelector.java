@@ -58,7 +58,7 @@ public class BlameVersionSelector implements BatchExtension {
       String fileContent = FileUtils.readFileToString(file, charset.name());
 
       String currentSha1 = sha1Generator.find(fileContent);
-      if (currentSha1.equals(previousSha1) && !isReloadBlameEnabled()) {
+      if (currentSha1.equals(previousSha1)) {
         return fileNotChanged(file, resource);
       }
 
@@ -69,12 +69,6 @@ public class BlameVersionSelector implements BatchExtension {
       return MeasureUpdate.NONE;
     }
   }
-  
-  private boolean isReloadBlameEnabled() {
-    String reloadBlame = System.getProperty("sonar.scm.reloadBlame");
-    return "".equals(reloadBlame) || Boolean.parseBoolean(reloadBlame);
-  }
-
 
   private MeasureUpdate fileNotChanged(File file, Resource resource) {
     LOG.debug("File not changed since previous analysis: {}", file);
