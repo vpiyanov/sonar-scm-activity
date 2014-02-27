@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.BatchExtension;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.resources.InputFile;
 import org.sonar.api.resources.ProjectFileSystem;
 import org.sonar.api.resources.Resource;
@@ -36,12 +37,14 @@ import java.nio.charset.Charset;
 public class BlameVersionSelector implements BatchExtension {
   private static final Logger LOG = LoggerFactory.getLogger(BlameVersionSelector.class);
 
+  private final ScmConfiguration configuration;
   private final Blame blame;
   private final Sha1Generator sha1Generator;
   private final FileToResource fileToResource;
   private final ProjectFileSystem projectFileSystem;
 
-  public BlameVersionSelector(Blame blame, Sha1Generator sha1Generator, FileToResource fileToResource, ProjectFileSystem projectFileSystem) {
+  public BlameVersionSelector(ScmConfiguration configuration, Blame blame, Sha1Generator sha1Generator, FileToResource fileToResource, ProjectFileSystem projectFileSystem) {
+    this.configuration = configuration;
     this.blame = blame;
     this.sha1Generator = sha1Generator;
     this.fileToResource = fileToResource;
@@ -58,7 +61,7 @@ public class BlameVersionSelector implements BatchExtension {
       String fileContent = FileUtils.readFileToString(file, charset.name());
 
       String currentSha1 = sha1Generator.find(fileContent);
-      if (currentSha1.equals(previousSha1)) {
+      if (currentSha1.equals(previousSha1) && !configuration.isReloadBlameEnabled()) {
         return fileNotChanged(file, resource);
       }
 

@@ -45,6 +45,7 @@ public class BlameVersionSelectorTest {
 
   BlameVersionSelector blameVersionSelector;
 
+  ScmConfiguration conf = mock(ScmConfiguration.class);
   Blame blameSensor = mock(Blame.class);
   Sha1Generator sha1Generator = mock(Sha1Generator.class);
   SensorContext context = mock(SensorContext.class);
@@ -56,7 +57,7 @@ public class BlameVersionSelectorTest {
   public void setUp() {
     ProjectFileSystem projectFileSystem = mock(ProjectFileSystem.class);
     when(projectFileSystem.getSourceCharset()).thenReturn(Charset.forName("UTF-8"));
-    blameVersionSelector = new BlameVersionSelector(blameSensor, sha1Generator, fileToResource, projectFileSystem);
+    blameVersionSelector = new BlameVersionSelector(conf, blameSensor, sha1Generator, fileToResource, projectFileSystem);
   }
 
   @Test
@@ -96,6 +97,21 @@ public class BlameVersionSelectorTest {
     MeasureUpdate update = blameVersionSelector.detect(inputFile, "SHA1", context);
 
     assertThat(update).isInstanceOf(CopyPreviousMeasures.class);
+  }
+  
+  @Test
+  public void should_save_blame_when_reloadEnabled() throws IOException {
+      File file = file("source.java", "foo");
+      InputFile inputFile = inputFile(file);
+      when(fileToResource.toResource(inputFile, context)).thenReturn(resource);
+      when(sha1Generator.find(anyString())).thenReturn("SHA1");
+      when(blameSensor.save(file, resource, "SHA1", 1)).thenReturn(saveBlame);
+
+      when(conf.isReloadBlameEnabled()).thenReturn(true);
+
+      MeasureUpdate update = blameVersionSelector.detect(inputFile, "SHA1", context);
+      
+      assertThat(update).isSameAs(saveBlame);
   }
 
   @Test
