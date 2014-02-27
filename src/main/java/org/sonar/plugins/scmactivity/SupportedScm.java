@@ -32,9 +32,10 @@ import org.apache.maven.scm.provider.perforce.PerforceScmProvider;
 import org.apache.maven.scm.provider.svn.svnexe.SvnExeScmProvider;
 import org.apache.maven.scm.provider.tfs.TfsScmProvider;
 import org.sonar.plugins.scmactivity.maven.SonarGitExeScmProvider;
+import org.sonar.plugins.scmactivity.maven.SonarSvnExeScmProvider;
 
 public enum SupportedScm {
-  SVN(new SvnExeScmProvider(), "scm:svn:svn://"),
+  SVN(new SonarSvnExeScmProvider(), "scm:svn:svn://"),
   CVS(new CvsExeScmProvider(), null),
   GIT(new SonarGitExeScmProvider(), "scm:git:"),
   HG(new HgScmProvider(), "scm:hg:"),
