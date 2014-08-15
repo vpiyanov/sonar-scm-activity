@@ -1,5 +1,5 @@
 /*
- * Sonar SCM Activity Plugin
+ * SonarQube SCM Activity Plugin
  * Copyright (C) 2010 SonarSource
  * dev@sonar.codehaus.org
  *
@@ -17,7 +17,6 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-
 package org.sonar.plugins.scmactivity;
 
 import org.apache.maven.scm.provider.ScmProvider;
@@ -29,10 +28,9 @@ import org.apache.maven.scm.provider.hg.HgScmProvider;
 import org.apache.maven.scm.provider.integrity.IntegrityScmProvider;
 import org.apache.maven.scm.provider.jazz.JazzScmProvider;
 import org.apache.maven.scm.provider.perforce.PerforceScmProvider;
-import org.apache.maven.scm.provider.svn.svnexe.SvnExeScmProvider;
-import org.apache.maven.scm.provider.tfs.TfsScmProvider;
 import org.sonar.plugins.scmactivity.maven.SonarGitExeScmProvider;
 import org.sonar.plugins.scmactivity.maven.SonarSvnExeScmProvider;
+import org.sonar.plugins.scmactivity.maven.SonarTfsScmProvider;
 
 public enum SupportedScm {
   SVN(new SonarSvnExeScmProvider(), "scm:svn:svn://"),
@@ -43,7 +41,7 @@ public enum SupportedScm {
   CLEAR_CASE(new ClearCaseScmProvider(), null),
   ACCU_REV(new AccuRevScmProvider(), null),
   PERFORCE(new PerforceScmProvider(), null),
-  TFS(new TfsScmProvider(), null),
+  TFS(new SonarTfsScmProvider(), "scm:tfs:"),
   JAZZ(new JazzScmProvider(), null),
   INTEGRITY(new IntegrityScmProvider(), null);
 
@@ -70,4 +68,5 @@ public enum SupportedScm {
   public ScmProvider getProvider() {
     return provider;
   }
+
 }
